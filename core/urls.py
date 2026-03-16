@@ -1,22 +1,14 @@
-"""
-Configuração de URLs para o projeto principal (core).
-
-Este arquivo mapeia as URLs para as views da aplicação.
-Para mais informações: https://docs.djangoproject.com/en/5.2/topics/http/urls/
-"""
-
 from django.conf import settings
 from django.contrib import admin
 from django.http import JsonResponse
 from django.urls import include, path
 from django.views.generic.base import RedirectView
 from rest_framework.authtoken.views import obtain_auth_token
-from rest_framework.routers import DefaultRouter
-
-from orders.views import OrderViewSet
-from products.views import ProductViewSet
-
-# --- 1. View para a Raiz da API ---
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularSwaggerView,
+    SpectacularRedocView,
+)
 
 
 def api_root(request):
@@ -33,18 +25,30 @@ def api_root(request):
     )
 
 
-# --- 2. Configuração do Roteador do DRF ---
-router = DefaultRouter()
-router.register(r"products", ProductViewSet, basename="product")
-router.register(r"orders", OrderViewSet, basename="order")
-
-# --- 3. Lista Principal de Padrões de URL ---
 urlpatterns = [
-    path("", RedirectView.as_view(url="/api/v1/", permanent=False), name="index"),
+    path("", RedirectView.as_view(url="/api/v1/", permanent=False)),
     path("admin/", admin.site.urls),
-    path("api-token-auth/", obtain_auth_token, name="api_token_auth"),
-    path("api/v1/", api_root, name="api-root"),
-    path("api/v1/", include(router.urls)),
+
+    # auth
+    path("api-token-auth/", obtain_auth_token),
+
+    # root da API
+    path("api/v1/", api_root),
+
+    # OpenAPI schema
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+
+    # Swagger UI
+    path("api/docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
+
+    # Redoc UI
+    path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
+
+    # apps
+    path("api/v1/products/", include("products.urls")),
+    path("api/v1/orders/", include("orders.urls")),
+    path("api/v1/payments/", include("payments.urls")),
+    path("api/v1/access/", include("access.urls")),
 ]
 
 if settings.DEBUG:

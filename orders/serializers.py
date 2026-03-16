@@ -38,11 +38,7 @@ class OrderItemCreateSerializer(serializers.Serializer):
     quantity = serializers.IntegerField(min_value=1)
 
     def validate_product_id(self, value):
-        try:
-            product = Product.objects.get(id=value)
-            if not product:
-                raise serializers.ValidationError("Produto não encontrado.")
-        except Product.DoesNotExist:
+        if not Product.objects.filter(id=value).exists():
             raise serializers.ValidationError("Produto não encontrado.")
         return value
 
@@ -53,12 +49,12 @@ class OrderCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ["id", "items", "user", "total_price"]
-        read_only_fields = ["user", "total_price"]
+        fields = ["id", "items", "customer_name", "email", "total_price"]
+        read_only_fields = ["total_price"]
 
     def create(self, validated_data):
         items_data = validated_data.pop("items")
-        user = validated_data.pop("user")
+        user = self.context["request"].user
 
         with transaction.atomic():
             total_price = 0

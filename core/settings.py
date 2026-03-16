@@ -18,6 +18,13 @@ IS_RENDER = os.getenv("RENDER", "false").lower() == "true"
 # SECRET_KEY
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-chave-local-para-desenvolvimento")
 
+# Stripe
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
+STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
+
+# resend
+RESEND_API_KEY = os.getenv("RESEND_API_KEY")
+
 # DEBUG
 # A lógica `if not IS_RENDER` garante que DEBUG seja sempre False em produção no Render.
 DEBUG = bool(int(os.getenv("DEBUG", 1))) if not IS_RENDER else False
@@ -29,6 +36,16 @@ if IS_RENDER:
     if RENDER_EXTERNAL_HOSTNAME:
         ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+]
+
 # Aplicações instaladas
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -39,9 +56,16 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "django_extensions",
+    "rest_framework.authtoken",
+    "drf_spectacular",
+    "corsheaders",
+
+    # APPS PROJETO
     "products",
     "orders",
-    "rest_framework.authtoken",
+    "payments",
+    "emails",
+    "access",
 ]
 
 if DEBUG:
@@ -49,6 +73,7 @@ if DEBUG:
 
 # Middleware
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -101,6 +126,7 @@ else:
         }
     }
 
+
 # Validação de senhas
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
@@ -131,4 +157,12 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
     ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+# DRF Spectacular
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Backend Template API",
+    "DESCRIPTION": "Documentação da API do projeto",
+    "VERSION": "1.0.0",
 }

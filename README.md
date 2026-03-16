@@ -205,14 +205,43 @@ Use `make` para simplificar os comandos Docker.
 | `make lint`    | Verifica o código com Flake8                  |
 | `make format`  | Formata o código com Black e isort            |
 
-### ✅ Poetry
+### Poetry
 
-| Comando               | Ação                                              |
-| --------------------- | ------------------------------------------------- |
-| `poetry install`      | Instala todas as dependências do `pyproject.toml` |
-| `poetry add <pacote>` | Adiciona um novo pacote ao projeto                |
-| `poetry shell`        | Ativa o ambiente virtual no shell atual           |
-| `poetry run <cmd>`    | Executa um comando dentro do ambiente virtual     |
+| Comando                           | Ação                                                                   |
+| --------------------------------- | ---------------------------------------------------------------------- |
+| `poetry new <nome>`               | Cria um novo projeto Python com estrutura padrão                       |
+| `poetry init`                     | Inicializa o Poetry em um projeto existente criando o `pyproject.toml` |
+| `poetry install`                  | Instala todas as dependências do projeto                               |
+| `poetry add <pacote>`             | Adiciona uma nova dependência ao projeto                               |
+| `poetry add <pacote> --group dev` | Adiciona uma dependência ao grupo de desenvolvimento                   |
+| `poetry remove <pacote>`          | Remove uma dependência do projeto                                      |
+| `poetry update`                   | Atualiza as dependências para as versões mais recentes permitidas      |
+| `poetry show`                     | Lista todas as dependências instaladas                                 |
+| `poetry show --tree`              | Mostra a árvore de dependências                                        |
+| `poetry show <pacote>`            | Mostra informações detalhadas de um pacote específico                  |
+| `poetry run <comando>`            | Executa um comando dentro do ambiente virtual do projeto               |
+| `poetry env list`                 | Lista os ambientes virtuais associados ao projeto                      |
+| `poetry env info`                 | Mostra informações sobre o ambiente virtual atual                      |
+| `poetry env info --path`          | Mostra o caminho do ambiente virtual                                   |
+| `poetry env activate`             | Ativa o ambiente virtual do projeto                                    |
+| `poetry env remove <python>`      | Remove um ambiente virtual do projeto                                  |
+| `poetry lock`                     | Gera ou atualiza o arquivo `poetry.lock`                               |
+| `poetry lock --no-update`         | Recria o lockfile sem atualizar versões das dependências               |
+| `poetry build`                    | Cria os arquivos de distribuição do pacote (`wheel` e `tar.gz`)        |
+| `poetry publish`                  | Publica o pacote em um repositório de pacotes                          |
+| `poetry check`                    | Verifica se o `pyproject.toml` está válido                             |
+| `poetry config --list`            | Mostra todas as configurações do Poetry                                |
+| `poetry config <chave> <valor>`   | Define ou altera configurações do Poetry                               |
+| `poetry version`                  | Mostra ou altera a versão do projeto                                   |
+| `poetry cache list`               | Lista os caches de pacotes do Poetry                                   |
+| `poetry cache clear <repo> --all` | Limpa o cache de pacotes do Poetry                                     |
+| `poetry self update`              | Atualiza o Poetry para a versão mais recente                           |
+| `poetry self add <plugin>`        | Adiciona um plugin ao Poetry                                           |
+| `poetry self remove <plugin>`     | Remove um plugin do Poetry                                             |
+| `poetry export`                   | Exporta dependências para `requirements.txt`                           |
+| `poetry about`                    | Mostra informações sobre o Poetry                                      |
+| `poetry help`                     | Mostra ajuda e comandos disponíveis                                    |
+| `poetry --version`                | Mostra a versão instalada do Poetry                                    |
 
 ---
 
@@ -267,7 +296,6 @@ pip freeze > requirements.txt
 2. **Fazer o Push para o GitHub.**
 
 3. **Criar o serviço no Render:**
-
    - **Build Command:**
      ```bash
      pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput
@@ -340,9 +368,11 @@ Poetry é a ferramenta escolhida para gerenciar dependências e ambientes virtua
     - `dj-database-url` e `python-dotenv`: Para gerenciar a configuração do banco de dados a partir de variáveis de ambiente.
 
 3.  **Adicione as dependências de desenvolvimento:**
+
     ```bash
     poetry add black isort flake8 pytest pytest-django --group dev
     ```
+
     - `--group dev` separa as ferramentas de qualidade de código e testes das dependências de produção.
 
 ### Passo 2: Estrutura Inicial do Django
